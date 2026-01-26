@@ -10,5 +10,7 @@ describe('Server API Tests', () => {
     const res = await request(app).get('/api/jobs');
     expect(res.statusCode).toEqual(200);
     expect(res.body.status).toBe('OK');
+    console.log('✅ Jobs API is working correctly');
+    console.log('Response Body:', res.body);
   });
 });
