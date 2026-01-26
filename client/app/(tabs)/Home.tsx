@@ -42,7 +42,7 @@ export default function Home() {
       
       // IMPORTANT: Use your CURRENT IP address here. 
       // If it fails, check your terminal for the IP shown in index.js
-      const baseUrl = "http://10.62.155.85:5000/api/jobs";
+      const baseUrl = "http://10.98.87.155:5000/api/jobs";
       const url = `${baseUrl}?search=${query}${category !== "All" ? `&category=${category}` : ""}`;
       
       console.log("Requesting URL:", url);

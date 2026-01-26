@@ -1,0 +1,11 @@
+You are an AI DevOps assistant. Analyze the following server logs and summarize:
+
+- Any errors or exceptions
+- Potential performance issues
+- Security warnings
+- Suggestions for improvement
+
+Logs:
+{{LOGS}}
+
+Provide a clear report in bullet points.

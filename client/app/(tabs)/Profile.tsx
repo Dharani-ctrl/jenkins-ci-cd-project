@@ -23,7 +23,7 @@ export default function Profile() {
   const fetchProfile = async () => {
     try {
       const token = await AsyncStorage.getItem("userToken");
-      const response = await fetch("http://10.62.155.85:5000/api/auth/profile", {
+      const response = await fetch("http://10.98.87.155:5000/api/auth/profile", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await response.json();

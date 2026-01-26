@@ -18,27 +18,26 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
 
-// Health check
+// JOB check
 app.get("/", (req, res) => {
   res.send("✅ Skill-Match server is running!");
 });
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://localhost:27017/skillmatch";
+  process.env.MONGO_URI || "mongodb://mongo:27017/skillmatch";
 
 mongoose
   .connect(MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB connected");
-
-    app.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-      console.log(
-        `📱 Mobile access: http://10.62.155.85:${PORT}`
-      );
-    });
   })
   .catch((error) => {
     console.error("❌ MongoDB connection failed:", error.message);
   });
+
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📱 Mobile access: http://10.98.87.85:${PORT}`);
+});
+

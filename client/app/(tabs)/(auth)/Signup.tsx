@@ -26,7 +26,7 @@ const WHITE = '#ffffff';
 const TEXT_COLOR = '#333';
 
 // Ensure this IP is exactly what your computer shows right now in 'ipconfig'
-const BASE_IP = "10.62.155.85"; 
+const BASE_IP = "10.98.87.155"; 
 const API_URL = Platform.OS === 'web' 
   ? "http://localhost:5000/api/auth" 
   : `http://${BASE_IP}:5000/api/auth`;
