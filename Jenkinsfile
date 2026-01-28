@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        timestamps()
+    }
+
     stages {
 
         stage('Checkout Code') {
@@ -13,9 +17,15 @@ pipeline {
             steps {
                 dir('server') {
                     bat '''
-                    echo ===== SERVER INSTALL AND TEST =====
-                    npm install || exit /b 1
-                    npm test || exit /b 1
+                    echo ================================
+                    echo ===== SERVER INSTALL & TEST =====
+                    echo ================================
+
+                    call npm install
+                    IF %ERRORLEVEL% NEQ 0 exit /b 1
+
+                    call npm test
+                    IF %ERRORLEVEL% NEQ 0 exit /b 1
                     '''
                 }
             }
@@ -25,9 +35,18 @@ pipeline {
             steps {
                 dir('client') {
                     bat '''
-                    echo ===== CLIENT INSTALL AND BUILD (EXPO) =====
-                    npm install || exit /b 1
-                    npx expo export || exit /b 1
+                    echo ======================================
+                    echo ===== CLIENT INSTALL & BUILD (EXPO) ===
+                    echo ======================================
+
+                    call npm install
+                    IF %ERRORLEVEL% NEQ 0 exit /b 1
+
+                    call npx expo export
+                    IF %ERRORLEVEL% NEQ 0 exit /b 1
+
+                    echo ===== VERIFY DIST FOLDER =====
+                    dir
                     echo ===== DIST CONTENT =====
                     dir dist
                     '''
@@ -38,10 +57,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ CI Pipeline Completed Successfully'
+            echo '✅ CI PIPELINE COMPLETED SUCCESSFULLY'
         }
         failure {
-            echo '❌ CI Pipeline Failed'
+            echo '❌ CI PIPELINE FAILED'
         }
     }
 }
