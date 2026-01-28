@@ -5,15 +5,15 @@ pipeline {
         timestamps()
     }
 
+    environment {
+        SERVER_USER = "ec2-user"
+        SERVER_IP   = "13.211.153.37"
+        SERVER_PATH = "/home/ec2-user/jenkins-ci-cd-project"
+    }
+
     stages {
 
-        stage('Checkout Code') {
-            steps {
-                checkout scm
-            }
-        }
-
-        stage('Server - Install & Test') {
+        stage('CI - Server Install & Test') {
             steps {
                 dir('server') {
                     bat '''
@@ -31,7 +31,7 @@ pipeline {
             }
         }
 
-        stage('Client - Install & Build (Expo)') {
+        stage('CI - Client Install & Build (Expo)') {
             steps {
                 dir('client') {
                     bat '''
@@ -45,11 +45,33 @@ pipeline {
                     call npx expo export
                     IF %ERRORLEVEL% NEQ 0 exit /b 1
 
-                    echo ===== VERIFY DIST FOLDER =====
-                    dir
-                    echo ===== DIST CONTENT =====
-                    dir dist
+                    echo ===== CLIENT BUILD COMPLETED =====
                     '''
+                }
+            }
+        }
+
+        stage('CD - Deploy to Linux Server') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo '🚀 STARTING DEPLOYMENT TO EC2...'
+
+                sshagent(credentials: ['ec2-ssh']) {
+                    bat """
+                    ssh -o StrictHostKeyChecking=no %SERVER_USER%@%SERVER_IP% ^
+                    "set -e &&
+                     echo 'Connected as:' && whoami &&
+                     cd %SERVER_PATH% &&
+                     echo 'Pulling latest code...' &&
+                     git pull origin main &&
+                     echo 'Stopping containers...' &&
+                     docker compose down &&
+                     echo 'Building & starting containers...' &&
+                     docker compose up --build -d &&
+                     echo 'Deployment completed successfully'"
+                    """
                 }
             }
         }
@@ -57,10 +79,10 @@ pipeline {
 
     post {
         success {
-            echo '✅ CI PIPELINE COMPLETED SUCCESSFULLY'
+            echo '✅ CI + CD PIPELINE COMPLETED SUCCESSFULLY'
         }
         failure {
-            echo '❌ CI PIPELINE FAILED'
+            echo '❌ PIPELINE FAILED — CHECK LOGS'
         }
     }
 }
