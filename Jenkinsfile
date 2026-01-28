@@ -14,8 +14,8 @@ pipeline {
                 dir('server') {
                     bat '''
                     echo ===== SERVER INSTALL AND TEST =====
-                    npm install
-                    npm test
+                    npm install || exit /b 1
+                    npm test || exit /b 1
                     '''
                 }
             }
@@ -26,9 +26,9 @@ pipeline {
                 dir('client') {
                     bat '''
                     echo ===== CLIENT INSTALL AND BUILD (EXPO) =====
-                    npm install
-                    npx expo export
-                    echo ===== DIST FILES =====
+                    npm install || exit /b 1
+                    npx expo export || exit /b 1
+                    echo ===== DIST CONTENT =====
                     dir dist
                     '''
                 }
