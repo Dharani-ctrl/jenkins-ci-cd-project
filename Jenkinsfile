@@ -6,13 +6,12 @@ pipeline {
     }
 
     environment {
-        SERVER_USER = "ec2-user"
-        SERVER_IP   = "13.211.153.37"
-        SERVER_PATH = "/home/ec2-user/jenkins-ci-cd-project"
+        SERVER_USER = 'ec2-user'
+        SERVER_IP   = '13.211.153.37'
+        SERVER_PATH = '/home/ec2-user/jenkins-ci-cd-project'
     }
 
     stages {
-
         stage('CI - Server Install & Test') {
             steps {
                 dir('server') {
@@ -52,24 +51,21 @@ pipeline {
         }
 
         stage('CD - Deploy to Linux Server') {
-
             steps {
                 echo '🚀 STARTING DEPLOYMENT TO EC2...'
 
                 sshagent(credentials: ['ec2-ssh']) {
-                    bat """
-                    ssh -o StrictHostKeyChecking=no %SERVER_USER%@%SERVER_IP% ^
-                    "set -e &&
-                     echo 'Connected as:' && whoami &&
-                     cd %SERVER_PATH% &&
-                     echo 'Pulling latest code...' &&
-                     git pull origin main &&
-                     echo 'Stopping containers...' &&
-                     docker compose down &&
-                     echo 'Building & starting containers...' &&
-                     docker compose up --build -d &&
-                     echo 'Deployment completed successfully'"
-                    """
+                    sh """
+    ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} '
+        set -e
+        echo "Connected as:" && whoami
+        cd ${SERVER_PATH}
+        git pull origin main
+        docker compose down
+        docker compose up --build -d
+        echo "Deployment completed successfully"
+    '
+    """
                 }
             }
         }
