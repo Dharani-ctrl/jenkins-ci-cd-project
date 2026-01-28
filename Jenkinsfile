@@ -52,9 +52,7 @@ pipeline {
         }
 
         stage('CD - Deploy to Linux Server') {
-            when {
-                branch 'main'
-            }
+
             steps {
                 echo '🚀 STARTING DEPLOYMENT TO EC2...'
 
