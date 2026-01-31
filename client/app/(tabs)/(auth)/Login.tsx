@@ -74,7 +74,7 @@ export default function Login() {
                 <Feather name="bar-chart-2" size={30} color={PRIMARY_BLUE} />
             </View>
 
-            <Text style={styles.title}>Welcome to SkillBridge</Text>
+            <Text style={styles.title}>Welcome to SkillBridge with DevOps</Text>
             <Text style={styles.subtitle}>Sign in to continue</Text>
 
             <View style={styles.inputContainer}>
