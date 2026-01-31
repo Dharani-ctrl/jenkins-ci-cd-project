@@ -29,13 +29,12 @@ pipeline {
                 }
             }
         }
-
         stage('CD - Deploy to EC2') {
             steps {
                 echo '🚀 Deploying to AWS EC2 using Plink...'
 
                 bat '''
-        plink -ssh -i "C:\\keys\\ec2-key.ppk" ec2-user@13.211.153.37 ^
+        "C:\\Program Files\\PuTTY\\plink.exe" -ssh -i "C:\\keys\\ec2-key.ppk" ec2-user@13.211.153.37 ^
         "cd /home/ec2-user/jenkins-ci-cd-project && \
          git pull origin main && \
          docker compose down && \
