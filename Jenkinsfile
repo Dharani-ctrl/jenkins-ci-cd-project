@@ -12,12 +12,12 @@ pipeline {
     }
 
     stages {
-        stage('CI - Server Install & Test') {
+        stage('CI - Server Install ^& Test') {
             steps {
                 dir('server') {
                     bat '''
                     echo ================================
-                    echo ===== SERVER INSTALL & TEST =====
+                    echo ===== SERVER INSTALL ^& TEST =====
                     echo ================================
 
                     call npm install
@@ -37,8 +37,8 @@ pipeline {
         -i "C:\\keys\\ec2-key.ppk" ec2-user@13.211.153.37 ^
         "cd /home/ec2-user/jenkins-ci-cd-project && \
         git pull origin main && \
-        docker compose down; \
-        docker compose up --build -d; \
+        docker-compose down; \
+        docker-compose up --build -d; \
         exit"
         '''
             }
