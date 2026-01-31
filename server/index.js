@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI =
-  process.env.MONGO_URI || "mongodb://mongo:27017/skillmatch";
+  process.env.MONGO_URI || "mongodb://localhost:27017/skillmatch";
 
 mongoose
   .connect(MONGO_URI)
