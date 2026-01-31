@@ -1,23 +1,34 @@
+version: "3.9"
+
 services:
   mongo:
-    image: "mongo"
-    ports:
-      - "27017:27017"
+    image: mongo
+    container_name: mongo
+    volumes:
+      - mongo_data:/data/db
+    restart: always
+
   server:
     build: ./server
+    container_name: server
     ports:
       - "5000:5000"
     depends_on:
       - mongo
     env_file:
-      - "./server/.env.prod"
-    volumes:
-      - ./mongo_data:/data/db
+      - ./server/.env.prod
+    restart: always
+
   client:
-    build: './client'
+    build: ./client
+    container_name: client
     ports:
       - "8081:8081"
     depends_on:
       - server
     env_file:
-      - "./client/.env.prod" 
+      - ./client/.env.prod
+    restart: always
+
+volumes:
+  mongo_data:
