@@ -7,6 +7,11 @@ import { getProfile } from "../controllers/authController.js";
 
 const router = express.Router();
 
+
+router.get("/", (req, res) => {
+  res.json({ success: true, message: "✅ Auth route is working!" });
+});
+
 // ✅ SIGNUP
 router.post("/signup", async (req, res) => {
   try {
