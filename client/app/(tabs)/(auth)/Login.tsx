@@ -35,50 +35,33 @@ export default function Login() {
   const [loading, setLoading] = useState(false); 
   const [showPassword, setShowPassword] = useState(false);
 
-const handleLogin = async () => {
-  if (!API_URL) {
-    Alert.alert(
-      "Configuration Error",
-      "API URL is not defined. Check EXPO_PUBLIC_API_URL"
-    );
-    console.error("❌ EXPO_PUBLIC_API_URL is undefined");
-    return;
-  }
-
-  if (!email || !password) {
-    Alert.alert("Error", "Please enter email and password");
-    return;
-  }
-
-  try {
-    setLoading(true);
-
-    console.log("🔗 Calling API:", `${API_URL}/login`);
-
-    const response = await fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await response.json();
-
-    console.log("✅ Login response:", data);
-
-    if (data.success) {
-      await AsyncStorage.setItem("token", data.token);
-      router.replace("/Home");
-    } else {
-      Alert.alert("Login Failed", data.msg || "Invalid credentials");
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert("Error", "Please enter email and password");
+      return;
     }
-  } catch (error) {
-    console.error("❌ Network error:", error);
-    Alert.alert("Network Error", "Cannot reach server.");
-  } finally {
-    setLoading(false);
-  }
-};
-
+   
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_URL}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        await AsyncStorage.setItem("token", data.token);
+        router.replace("/Home");
+      } else {
+        Alert.alert("Login Failed", data.msg || "Invalid credentials");
+      }
+    } catch (error) {
+      Alert.alert("Network Error", "Cannot reach server. Ensure computer and phone are on the same Wi-Fi.");
+    } finally {
+      setLoading(false);
+    }
+    
+  };
 
   return (
     <View style={styles.mainBackground}>
