@@ -25,10 +25,8 @@ const BORDER_COLOR = '#ecf0f1';
 const BUTTON_BG = '#2c3e50'; 
 const WHITE = '#ffffff';
 
-const BASE_IP = "10.98.87.155"; 
-const API_URL = Platform.OS === 'web' 
-  ? "http://localhost:5000/api/auth" 
-  : `http://${BASE_IP}:5000/api/auth`;
+const API_URL = process.env.EXPO_PUBLIC_API_URL;
+
 
 export default function Login() {
   const router = useRouter();
