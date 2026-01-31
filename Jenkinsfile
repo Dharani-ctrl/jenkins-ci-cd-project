@@ -17,7 +17,7 @@ pipeline {
                 dir('server') {
                     bat '''
 echo ================================
-echo ===== SERVER INSTALL & TEST =====
+echo ===== SERVER INSTALL ^& TEST =====
 echo ================================
 
 call npm install
@@ -36,10 +36,7 @@ IF %ERRORLEVEL% NEQ 0 exit /b 1
                 bat '''
 "C:\\Program Files\\PuTTY\\plink.exe" -batch -ssh ^
 -i "C:\\keys\\ec2-key.ppk" ec2-user@13.211.153.37 ^
-"bash -lc 'cd /home/ec2-user/jenkins-ci-cd-project &&
- git pull origin main &&
- docker compose down || true &&
- docker compose up --build -d'"
+"bash -lc \"cd /home/ec2-user/jenkins-ci-cd-project ^&^& git pull origin main ^&^& docker compose down || true ^&^& docker compose up --build -d\""
 '''
             }
         }
