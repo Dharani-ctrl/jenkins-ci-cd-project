@@ -20,14 +20,15 @@ services:
     restart: always
 
   client:
-    build: ./client
+    build:
+      context: ./client
+      args:
+        EXPO_PUBLIC_API_URL: http://13.211.153.37:5000/api/auth
     container_name: client
     ports:
       - "8081:8081"
     depends_on:
       - server
-    env_file:
-      - ./client/.env.prod
     restart: always
 
 volumes:
