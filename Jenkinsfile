@@ -6,9 +6,11 @@ pipeline {
     }
 
     environment {
-        SERVER_USER = 'ec2-user'
-        SERVER_IP   = '13.211.153.37'
-        SERVER_PATH = '/home/ec2-user/jenkins-ci-cd-project'
+        SERVER_USER   = 'ec2-user'
+        SERVER_IP     = '13.211.153.37'
+        DEPLOY_SCRIPT = '/home/ec2-user/deploy.sh'
+        SSH_KEY       = 'C:\\keys\\ec2-key.ppk'
+        PLINK         = 'C:\\Program Files\\PuTTY\\plink.exe'
     }
 
     stages {
@@ -17,7 +19,7 @@ pipeline {
                 dir('server') {
                     bat '''
 echo ================================
-echo ===== SERVER INSTALL ^& TEST =====
+echo ===== SERVER INSTALL & TEST =====
 echo ================================
 
 call npm install
@@ -30,19 +32,15 @@ IF %ERRORLEVEL% NEQ 0 exit /b 1
             }
         }
 
-stage('CD - Deploy to EC2') {
-    steps {
-        echo '🚀 Deploying to AWS EC2 using Plink...'
-        bat '''
-"C:\\Program Files\\PuTTY\\plink.exe" -batch -ssh -i "C:\\keys\\ec2-key.ppk" ec2-user@13.211.153.37 ^
-"bash -lc 'cd /home/ec2-user/jenkins-ci-cd-project && \
-git pull origin main && \
-docker-compose down || true && \
-docker-compose up --build -d'"
-'''
-    }
-}
+        stage('CD - Deploy to EC2') {
+            steps {
+                echo '🚀 Deploying to AWS EC2 using deploy.sh...'
 
+                bat '''
+"%PLINK%" -batch -ssh -i "%SSH_KEY%" %SERVER_USER%@%SERVER_IP% "bash %DEPLOY_SCRIPT%"
+'''
+            }
+        }
     }
 
     post {
@@ -53,4 +51,4 @@ docker-compose up --build -d'"
             echo '❌ PIPELINE FAILED — CHECK LOGS'
         }
     }
-    }
+}
