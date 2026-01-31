@@ -11,6 +11,8 @@ services:
       - mongo
     env_file:
       - "./server/.env.prod"
+  volumes:
+    - ./mongo_data:/data/db
   client:
     build: './client'
     ports:
