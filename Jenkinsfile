@@ -33,14 +33,13 @@ pipeline {
             steps {
                 echo '🚀 Deploying to AWS EC2 using Plink...'
                 bat '''
-        "C:\\Program Files\\PuTTY\\plink.exe" -batch -ssh ^
-        -i "C:\\keys\\ec2-key.ppk" ec2-user@13.211.153.37 ^
-        "cd /home/ec2-user/jenkins-ci-cd-project && \
-        git pull origin main && \
-        docker-compose down; \
-        docker-compose up --build -d; \
-        exit"
-        '''
+"C:\\Program Files\\PuTTY\\plink.exe" -batch -ssh ^
+-i "C:\\keys\\ec2-key.ppk" ec2-user@13.211.153.37 ^
+"cd /home/ec2-user/jenkins-ci-cd-project && \
+ git pull origin main && \
+ docker compose down || true && \
+ docker compose up --build -d"
+'''
             }
         }
     }
