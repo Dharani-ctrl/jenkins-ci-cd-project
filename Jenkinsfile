@@ -30,43 +30,17 @@ pipeline {
             }
         }
 
-        stage('CI - Client Install & Build (Expo)') {
+        stage('CD - Deploy to EC2') {
             steps {
-                dir('client') {
-                    bat '''
-                    echo ======================================
-                    echo ===== CLIENT INSTALL & BUILD (EXPO) ===
-                    echo ======================================
+                echo '🚀 Deploying to AWS EC2 using Plink...'
 
-                    call npm install
-                    IF %ERRORLEVEL% NEQ 0 exit /b 1
-
-                    call npx expo export
-                    IF %ERRORLEVEL% NEQ 0 exit /b 1
-
-                    echo ===== CLIENT BUILD COMPLETED =====
-                    '''
-                }
-            }
-        }
-
-        stage('CD - Deploy to Linux Server') {
-            steps {
-                echo '🚀 STARTING DEPLOYMENT TO EC2...'
-
-                sshagent(credentials: ['ec2-ssh']) {
-                    sh """
-    ssh -o StrictHostKeyChecking=no ${SERVER_USER}@${SERVER_IP} '
-        set -e
-        echo "Connected as:" && whoami
-        cd ${SERVER_PATH}
-        git pull origin main
-        docker compose down
-        docker compose up --build -d
-        echo "Deployment completed successfully"
-    '
-    """
-                }
+                bat '''
+        plink -ssh -i "C:\\keys\\ec2-key.ppk" ec2-user@13.211.153.37 ^
+        "cd /home/ec2-user/jenkins-ci-cd-project && \
+         git pull origin main && \
+         docker compose down && \
+         docker compose up --build -d"
+        '''
             }
         }
     }
