@@ -22,6 +22,9 @@ call npm test || exit /b 1
         }
 
         stage('CI - AI Log Analysis') {
+            environment {
+                GEMINI_API_KEY = 'AIzaSyB50HvUjripLvRYxiozXGaHeRyQdCUfAuE' // Replace with your actual Gemini API Key before committing
+            }
             steps {
                 dir('service') {
                     bat '''
