@@ -1,11 +1,17 @@
-You are an AI DevOps assistant. Analyze the following server logs and summarize:
-
-- Any errors or exceptions
-- Potential performance issues
-- Security warnings
-- Suggestions for improvement
+You are an AI DevOps assistant. Analyze the following server/build logs to identify critical issues.
 
 Logs:
 {{LOGS}}
 
-Provide a clear report in bullet points.
+You must output a strictly valid JSON object with the following structure:
+{
+  "status": "SUCCESS" | "WARNING" | "FAILURE",
+  "summary": "A short 1-2 sentence summary of what happened.",
+  "errors": ["List of specific errors found, if any"],
+  "suggestions": ["List of suggestions to fix the issues, if any"]
+}
+
+Set "status" to "FAILURE" ONLY if there are critical errors that indicate the application is crashing, failing to start, or build failed.
+Set "status" to "WARNING" if there are minor issues, vulnerabilities, or performance warnings but the application can still run.
+Set "status" to "SUCCESS" if the logs look healthy and normal.
+Do not output any markdown text outside the JSON.

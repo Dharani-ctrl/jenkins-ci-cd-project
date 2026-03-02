@@ -21,6 +21,21 @@ call npm test || exit /b 1
             }
         }
 
+        stage('CI - AI Log Analysis') {
+            steps {
+                dir('service') {
+                    bat '''
+echo =======================================
+echo ===== AI LOG PREDICTION ^& ANALYSIS =====
+echo =======================================
+
+call npm install || exit /b 1
+node analyzeLogs.js || exit /b 1
+'''
+                }
+            }
+        }
+
         stage('CD - Deploy to EC2') {
             steps {
                 echo '🚀 Deploying to AWS EC2 using deploy.sh...'
