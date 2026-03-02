@@ -39,7 +39,7 @@ const analyzeLogs = async () => {
   if (!apiKey) {
     console.log("⚠️ No GEMINI_API_KEY found in environment. Skipping AI Log Analysis.");
     // Exit cleanly if no key is provided so Jenkins pipeline can continue
-    process.exit(0);
+    return;
   }
 
   const ai = new GoogleGenAI({ apiKey: apiKey });
@@ -63,7 +63,7 @@ const analyzeLogs = async () => {
       result = JSON.parse(aiText);
     } catch (e) {
       console.log("⚠️ Failed to parse AI response as JSON:", aiText);
-      process.exit(0);
+      return;
     }
 
     console.log("\n================ [ AI ANALYSIS RESULT ] ================");
@@ -86,12 +86,14 @@ const analyzeLogs = async () => {
       process.exit(1); // Tell Jenkins to fail the build
     } else {
       console.log("✅ AI Analysis passed.");
-      process.exit(0);
+      // Just return, do not use process.exit(0) as it causes assertion errors on Windows
+      return;
     }
 
   } catch (error) {
     console.error("❌ Error running AI Log Analysis:", error.message);
-    process.exit(0); // Optional: change to 1 if you want API failures to break the pipeline 
+    // Just return instead of exit(0)
+    return;
   }
 };
 
