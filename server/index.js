@@ -30,7 +30,7 @@ const MONGO_URI =
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    console.log("MongoDB connected");
+    console.log("✅ MongoDB connected");
   })
   .catch((error) => {
     console.log(`Server running on http://localhost:${PORT}`);
