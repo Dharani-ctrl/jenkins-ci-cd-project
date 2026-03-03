@@ -8,7 +8,7 @@ import jobRoutes from "./routes/jobs.js";
 
 dotenv.config();
 
-const app = express();
+//const app = express();
 
 // Middleware
 app.use(cors());
