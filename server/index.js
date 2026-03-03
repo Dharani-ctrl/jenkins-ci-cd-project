@@ -30,14 +30,10 @@ const MONGO_URI =
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    console.log("✅ MongoDB connected");
+    console.log("MongoDB connected");
   })
   .catch((error) => {
-    console.error("❌ MongoDB connection failed:", error.message);
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Mobile access: http://10.98.87.85:${PORT}`);
   });
-
-const server = app.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📱 Mobile access: http://10.98.87.85:${PORT}`);
-});
 
