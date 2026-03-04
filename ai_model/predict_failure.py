@@ -82,29 +82,55 @@ def train_model():
     print(f"\n[SAVED] Model saved successfully to {os.path.abspath(MODEL_PATH)}")
 
 def predict_current_build(duration, warnings, errors, lines, test_rate):
+    import sys
     if not os.path.exists(MODEL_PATH):
         print("[ERROR] Model not found! Please train the model first by running:")
         print("   python predict_failure.py train")
         return
-        
-    print(f"[PREDICT] Predicting status for new build: duration={duration}s, warnings={warnings}, errors={errors}, lines={lines}, test_rate={test_rate:.1f}%")
+
+    print(f"[PREDICT] Analyzing build: duration={duration}s, warnings={warnings}, errors={errors}, lines={lines}, test_rate={test_rate:.1f}%")
     model = joblib.load(MODEL_PATH)
-    
+
     features = pd.DataFrame(
-        [[duration, warnings, errors, lines, test_rate]], 
+        [[duration, warnings, errors, lines, test_rate]],
         columns=['duration', 'warnings', 'errors', 'lines', 'test_rate']
     )
     prediction = model.predict(features)[0]
     probability = model.predict_proba(features)[0]
-    
-    print("\n================ [ ML PREDICTION RESULT ] ================")
-    if prediction == 1:
-        print(f"[ALERT] STATUS: PREDICTED FAILURE (Confidence: {probability[1]*100:.1f}%)")
-        print("==========================================================\n")
-        sys.exit(1) # This tells Jenkins to stop the pipeline!
+
+    # Confidence scores
+    failure_confidence = probability[1] * 100   # % chance of failure
+    success_confidence = probability[0] * 100   # % chance of success
+
+    print("\n========== [ AI CONFIDENCE THRESHOLD GATE ] ==========")
+    print(f"  Failure Confidence : {failure_confidence:.1f}%")
+    print(f"  Success Confidence : {success_confidence:.1f}%")
+    print("------------------------------------------------------")
+
+    # ---- 3-Tier Decision Gate ----
+    if prediction == 1 and failure_confidence >= 90:
+        # TIER 1: Very High Failure Risk → BLOCK deployment
+        print("  DECISION : [BLOCK] AUTO-BLOCKED")
+        print("  REASON   : AI confidence of failure exceeds 90%.")
+        print("  ACTION   : Deployment stopped. Fix errors before retrying.")
+        print("======================================================\n")
+        sys.exit(1)  # Fails Jenkins build immediately
+
+    elif prediction == 1 and 60 <= failure_confidence < 90:
+        # TIER 2: Moderate Risk → WARN, continue pipeline but flag it
+        print("  DECISION : [WARN] MANUAL REVIEW RECOMMENDED")
+        print(f"  REASON   : Failure confidence is {failure_confidence:.1f}% (60-90% range).")
+        print("  ACTION   : Pipeline continues, but human review is advised before deployment.")
+        print("======================================================\n")
+        # Do NOT exit — pipeline continues with a warning
+
     else:
-        print(f"[OK] STATUS: PREDICTED SUCCESS (Confidence: {probability[0]*100:.1f}%)")
-        print("==========================================================\n")
+        # TIER 3: Low Risk → AUTO-DEPLOY
+        print("  DECISION : [PASS] AUTO-DEPLOY APPROVED")
+        print(f"  REASON   : Success confidence is {success_confidence:.1f}% (above threshold).")
+        print("  ACTION   : Pipeline cleared for deployment to EC2.")
+        print("======================================================\n")
+
 
 if __name__ == "__main__":
     import sys

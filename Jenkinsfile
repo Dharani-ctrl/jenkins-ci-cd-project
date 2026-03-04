@@ -20,6 +20,27 @@ call npm test || exit /b 1
                 }
             }
         }
+        stage('CI - Security Vulnerability Scan') {
+            steps {
+                bat '''
+echo =====================================
+echo ===== SECURITY ^& VULNERABILITY SCAN =====
+echo =====================================
+
+REM Run npm audit on server dependencies and save output
+cd server
+call npm audit --json > ..\security-report.json 2>&1 || echo Audit completed with findings.
+cd ..
+
+REM Parse the summary from npm audit output
+call npm audit --prefix server 2>&1 | findstr /I "vulnerability\|vulnerabilities\|critical\|high\|moderate\|low\|found"
+
+echo.
+echo [SECURITY] Scan complete. Results saved to security-report.json
+echo [SECURITY] Review critical/high vulnerabilities before deployment.
+'''
+            }
+        }
 
         stage('CI - ML Failure Prediction') {
             steps {
