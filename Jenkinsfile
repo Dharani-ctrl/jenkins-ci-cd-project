@@ -29,11 +29,11 @@ echo =====================================
 
 REM Run npm audit on server dependencies and save output
 cd server
-call npm audit --json > ..\security-report.json 2>&1 || echo Audit completed with findings.
+call npm audit --json > ../security-report.json 2>&1 || echo Audit completed with findings.
 cd ..
 
 REM Parse the summary from npm audit output
-call npm audit --prefix server 2>&1 | findstr /I "vulnerability\|vulnerabilities\|critical\|high\|moderate\|low\|found"
+call npm audit --prefix server 2>&1 | findstr /I "vulnerability vulnerabilities critical high moderate low found"
 
 echo.
 echo [SECURITY] Scan complete. Results saved to security-report.json
