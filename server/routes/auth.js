@@ -12,6 +12,11 @@ router.get("/", (req, res) => {
   res.json({ success: true, message: "✅ Auth route is working!" });
 });
 
+router.post("/test-echo", (req, res) => {
+  console.log("🔊 ECHO:", req.body);
+  res.json({ received: req.body });
+});
+
 // ✅ SIGNUP
 router.post("/signup", async (req, res) => {
   try {
@@ -50,11 +55,14 @@ router.post("/login", async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      console.log("❌ User not found");
+      console.log(`❌ User not found: ${email}`);
       return res.status(404).json({ success: false, msg: "User not found" });
     }
 
+    console.log("👤 User found, checking password...");
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log(`🔑 Password match: ${isMatch}`);
+
     if (!isMatch) {
       console.log("❌ Invalid password");
       return res.status(400).json({ success: false, msg: "Invalid credentials" });

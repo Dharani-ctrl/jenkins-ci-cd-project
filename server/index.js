@@ -20,6 +20,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Request logger
+app.use((req, res, next) => {
+  console.log(`📡 [${req.method}] ${req.url}`);
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log("📦 Body:", JSON.stringify(req.body, null, 2));
+  }
+  next();
+});
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
@@ -49,4 +58,13 @@ mongoose
   .catch((error) => {
     console.error("❌ MongoDB connection failed:", error.message);
   });
+
+// Handle server crashes gracefully and log errors
+process.on("uncaughtException", (err) => {
+  console.error("🔥 UNCAUGHT EXCEPTION:", err);
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("🔥 UNHANDLED REJECTION:", reason);
+});
 

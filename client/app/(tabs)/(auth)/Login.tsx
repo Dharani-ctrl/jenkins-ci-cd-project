@@ -25,7 +25,7 @@ const BORDER_COLOR = "#ecf0f1";
 const BUTTON_BG = "#2c3e50";
 const WHITE = "#ffffff";
 
-const BASE_IP = "10.98.87.155";
+const BASE_IP = "10.211.98.85";
 const API_URL =
   Platform.OS === "web"
     ? "http://localhost:5000/api/auth"
@@ -52,6 +52,7 @@ export default function Login() {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
+      console.log("🔑 Login Result:", data);
       if (data.success) {
         await AsyncStorage.setItem("token", data.token);
         router.replace("/Home");

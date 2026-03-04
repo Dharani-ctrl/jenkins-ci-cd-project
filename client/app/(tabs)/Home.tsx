@@ -15,17 +15,17 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 // --- Project Components ---
-import JobCard from "../../components/JobCard"; 
+import JobCard from "../../components/JobCard";
 
 // --- Design Constants ---
-const PRIMARY_BLUE = '#1e88e5'; 
-const DARK_TEXT = '#2c3e50';   
-const LIGHT_BG = '#f5f7fa';    
+const PRIMARY_BLUE = '#1e88e5';
+const DARK_TEXT = '#2c3e50';
+const LIGHT_BG = '#f5f7fa';
 const WHITE = '#ffffff';
 
 export default function Home() {
   const router = useRouter();
-  
+
   // States
   const [searchQuery, setSearchQuery] = useState("");
   const [jobs, setJobs] = useState([]);
@@ -36,25 +36,27 @@ export default function Home() {
   const categories = ["All", "Developer", "Designer", "Manager", "Analyst"];
 
   // --- Fetch Jobs Logic ---
+  const BASE_IP = "10.211.98.85";
+  const baseUrl = Platform.OS === 'web'
+    ? "http://localhost:5000/api/jobs"
+    : `http://${BASE_IP}:5000/api/jobs`;
+
   const fetchJobs = async (query = "", category = "All") => {
     try {
       setLoading(true);
-      
-      // IMPORTANT: Use your CURRENT IP address here. 
-      // If it fails, check your terminal for the IP shown in index.js
-      const baseUrl = "http://10.98.87.155:5000/api/jobs";
+
       const url = `${baseUrl}?search=${query}${category !== "All" ? `&category=${category}` : ""}`;
-      
+
       console.log("Requesting URL:", url);
 
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
       }
 
       const data = await response.json();
-      
+
       // We look for 'data.jobs' because your backend sends { success: true, jobs: [...] }
       if (data && data.jobs) {
         setJobs(data.jobs);
@@ -103,7 +105,7 @@ export default function Home() {
           <Text style={styles.greeting}>Find Your Path,</Text>
           <Text style={styles.userName}>Explore Opportunities 🚀</Text>
         </View>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.profileButton}
           onPress={() => router.push("/Profile")}
         >
@@ -111,7 +113,7 @@ export default function Home() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
+      <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[PRIMARY_BLUE]} />
@@ -139,22 +141,22 @@ export default function Home() {
         <View style={styles.sectionTitleRow}>
           <Text style={styles.sectionTitle}>Categories</Text>
         </View>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.categoryList}
         >
           {categories.map((cat) => (
-            <TouchableOpacity 
-              key={cat} 
+            <TouchableOpacity
+              key={cat}
               onPress={() => handleCategorySelect(cat)}
               style={[
-                styles.categoryChip, 
+                styles.categoryChip,
                 activeCategory === cat && styles.activeChip
               ]}
             >
               <Text style={[
-                styles.categoryText, 
+                styles.categoryText,
                 activeCategory === cat && styles.activeCategoryText
               ]}>
                 {cat}
