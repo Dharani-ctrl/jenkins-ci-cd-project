@@ -32,7 +32,11 @@ router.get("/stats", async (req, res) => {
 // POST /api/predictions — Save a new build prediction result (called from Jenkins via savePrediction.js)
 router.post("/", async (req, res) => {
     try {
-        const prediction = new BuildPrediction(req.body);
+        const data = { ...req.body };
+        if (data.errors !== undefined && data.errorCount === undefined) {
+            data.errorCount = data.errors;
+        }
+        const prediction = new BuildPrediction(data);
         await prediction.save();
         res.status(201).json({ message: "Prediction saved successfully", prediction });
     } catch (err) {

@@ -42,7 +42,7 @@ function renderTable(predictions) {
         <td><code>${p.commitHash || "N/A"}</code></td>
         <td>${p.branch}</td>
         <td>${p.duration}s</td>
-        <td>${p.errors}</td>
+        <td>${p.errorCount ?? p.errors ?? 0}</td>
         <td>${p.testPassRate}%</td>
         <td>${mlBadge}</td>
         <td>${p.mlConfidence ? p.mlConfidence.toFixed(1) + "%" : "N/A"}</td>

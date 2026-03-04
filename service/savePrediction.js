@@ -41,7 +41,7 @@ const payload = {
     branch: BRANCH_NAME,
     duration: DURATION,
     warnings: WARNINGS,
-    errors: ERRORS,
+    errorCount: ERRORS,
     linesChanged: LINES_CHANGED,
     testPassRate: TEST_PASS_RATE,
     mlStatus: ML_STATUS,

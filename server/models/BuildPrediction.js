@@ -8,7 +8,7 @@ const buildPredictionSchema = new mongoose.Schema(
         // --- ML Input Metrics ---
         duration: { type: Number, default: 0 }, // seconds
         warnings: { type: Number, default: 0 },
-        errors: { type: Number, default: 0 },
+        errorCount: { type: Number, default: 0 },
         linesChanged: { type: Number, default: 0 },
         testPassRate: { type: Number, default: 100 }, // %
         // --- ML Output ---
