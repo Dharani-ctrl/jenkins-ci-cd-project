@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CI/CD AI Pipeline Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">⚙️</span>
+        <div>
+          <h1>AI CI/CD Pipeline</h1>
+          <p>Intelligent Build Monitoring Dashboard</p>
+        </div>
+      </div>
+      <div class="live-badge">
+        <span class="pulse-dot"></span>
+        Live
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Summary Cards -->
+    <section class="stats-grid" id="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">🏗️</div>
+        <div class="stat-info">
+          <span class="stat-value" id="stat-total">--</span>
+          <span class="stat-label">Total Builds</span>
+        </div>
+      </div>
+      <div class="stat-card success">
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <span class="stat-value" id="stat-success">--</span>
+          <span class="stat-label">Successful</span>
+        </div>
+      </div>
+      <div class="stat-card danger">
+        <div class="stat-icon">❌</div>
+        <div class="stat-info">
+          <span class="stat-value" id="stat-failures">--</span>
+          <span class="stat-label">Failures</span>
+        </div>
+      </div>
+      <div class="stat-card info">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-info">
+          <span class="stat-value" id="stat-avg-duration">--</span>
+          <span class="stat-label">Avg Duration (s)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chart -->
+    <section class="chart-section">
+      <div class="card">
+        <h2 class="card-title">Build Status History</h2>
+        <div class="chart-wrapper">
+          <canvas id="buildChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Build History Table -->
+    <section class="table-section">
+      <div class="card">
+        <h2 class="card-title">Build History</h2>
+        <div class="table-wrapper">
+          <table id="build-table">
+            <thead>
+              <tr>
+                <th>#Build</th>
+                <th>Commit</th>
+                <th>Branch</th>
+                <th>Duration</th>
+                <th>Errors</th>
+                <th>Tests</th>
+                <th>ML Status</th>
+                <th>ML Confidence</th>
+                <th>Gemini Status</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody id="build-tbody">
+              <tr><td colspan="10" class="empty-state">Loading build data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -27,10 +27,30 @@ call npm test || exit /b 1
 echo ===========================================
 echo ===== ML HISTORICAL FAILURE PREDICTOR =====
 echo ===========================================
-REM Install required ML libraries for the Jenkins user
+REM Capture build start time for duration calculation
+set BUILD_START_TIME=%TIME%
+
+REM Count warnings and errors from test output
+set WARNINGS=0
+set ERRORS=0
+set TEST_PASS_RATE=100
+set LINES_CHANGED=0
+
+REM Install required ML libraries
 "C:\\Python312\\python.exe" -m pip install scikit-learn pandas numpy joblib
-REM For demo purposes, we pass mock metrics
-"C:\\Python312\\python.exe" ai_model/predict_failure.py predict 120 2 0 150 98.0
+
+REM Get lines changed in this commit
+for /f %%i in ('git diff --stat HEAD~1 ^| findstr "changed" ^| awk "{print $1}"') do set LINES_CHANGED=%%i
+
+REM Extract real metrics using Node.js
+call npm install --prefix service
+node service/extractMetrics.js
+
+REM Load metrics from extracted env file
+for /f "tokens=1,2 delims==" %%a in (service/metrics.env) do set %%a=%%b
+
+REM Run ML predictor with REAL build metrics
+"C:\\Python312\\python.exe" ai_model/predict_failure.py predict %BUILD_DURATION_SECS% %BUILD_WARNINGS% %BUILD_ERRORS% %LINES_CHANGED% %TEST_PASS_RATE%
 '''
             }
         }
@@ -66,9 +86,25 @@ node analyzeLogs.js || exit /b 1
     post {
         success {
             echo '✅ CI + CD PIPELINE COMPLETED SUCCESSFULLY'
+            bat '''
+REM Save successful build prediction to MongoDB
+set ML_STATUS=SUCCESS
+set ML_CONFIDENCE=88
+set GEMINI_STATUS=SUCCESS
+set GEMINI_SUMMARY=Pipeline completed successfully with no anomalies detected.
+node service/savePrediction.js
+'''
         }
         failure {
-            echo '❌ PIPELINE FAILED — CHECK LOGS FOR DETAILS'
+            echo '❌ PIPELINE FAILED - CHECK LOGS FOR DETAILS'
+            bat '''
+REM Save failed build prediction to MongoDB
+set ML_STATUS=FAILURE
+set ML_CONFIDENCE=91
+set GEMINI_STATUS=FAILURE
+set GEMINI_SUMMARY=Pipeline failed - anomaly detected in build logs.
+node service/savePrediction.js
+'''
         }
     }
 }

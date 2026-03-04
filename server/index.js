@@ -2,9 +2,15 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import path from "path";
 
 import authRoutes from "./routes/auth.js";
 import jobRoutes from "./routes/jobs.js";
+import predictionRoutes from "./routes/predictions.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config();
 
@@ -17,6 +23,10 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/jobs", jobRoutes);
+app.use("/api/predictions", predictionRoutes);
+
+// Dashboard - serve static HTML dashboard
+app.use("/dashboard", express.static(path.join(__dirname, "..", "dashboard")));
 
 // JOB check
 app.get("/", (req, res) => {
@@ -31,9 +41,12 @@ mongoose
   .connect(MONGO_URI)
   .then(() => {
     console.log("✅ MongoDB connected");
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Dashboard: http://localhost:${PORT}/dashboard`);
+    });
   })
   .catch((error) => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Mobile access: http://10.98.87.85:${PORT}`);
+    console.error("❌ MongoDB connection failed:", error.message);
   });
 
