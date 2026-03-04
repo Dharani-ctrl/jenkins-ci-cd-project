@@ -30,7 +30,7 @@ echo ===========================================
 REM Install required ML libraries for the Jenkins user
 "C:\\Python312\\python.exe" -m pip install scikit-learn pandas numpy joblib
 REM For demo purposes, we pass mock metrics
-"C:\\Python312\\python.exe" ai_model/predict_failure.py predict 200 40 5 150 65.0
+"C:\\Python312\\python.exe" ai_model/predict_failure.py predict 120 2 0 150 98.0
 '''
             }
         }

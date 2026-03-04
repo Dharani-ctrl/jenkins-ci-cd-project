@@ -35,5 +35,3 @@ mongoose
   .catch((error) => {
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`Mobile access: http://10.98.87.85:${PORT}`);
-  });
-
