@@ -100,9 +100,11 @@ def predict_current_build(duration, warnings, errors, lines, test_rate):
     print("\n================ [ ML PREDICTION RESULT ] ================")
     if prediction == 1:
         print(f"[ALERT] STATUS: PREDICTED FAILURE (Confidence: {probability[1]*100:.1f}%)")
+        print("==========================================================\n")
+        sys.exit(1) # This tells Jenkins to stop the pipeline!
     else:
         print(f"[OK] STATUS: PREDICTED SUCCESS (Confidence: {probability[0]*100:.1f}%)")
-    print("==========================================================\n")
+        print("==========================================================\n")
 
 if __name__ == "__main__":
     import sys
