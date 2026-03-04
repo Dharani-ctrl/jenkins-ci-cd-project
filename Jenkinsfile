@@ -23,15 +23,15 @@ call npm test || exit /b 1
 
         stage('CI - ML Failure Prediction') {
             steps {
-                dir('ai_model') {
-                    bat '''
+                bat '''
 echo ===========================================
 echo ===== ML HISTORICAL FAILURE PREDICTOR =====
 echo ===========================================
-REM For demo purposes, we pass mock metrics: duration=120s, warnings=2, errors=0, lines=150, tests=98%%
-python predict_failure.py predict 120 2 0 150 98.0
+REM Install required ML libraries for the Jenkins user
+"C:\\Python312\\python.exe" -m pip install scikit-learn pandas numpy joblib
+REM For demo purposes, we pass mock metrics
+"C:\\Python312\\python.exe" ai_model/predict_failure.py predict 120 2 0 150 98.0
 '''
-                }
             }
         }
 
