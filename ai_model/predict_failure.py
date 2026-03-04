@@ -30,7 +30,7 @@ def generate_historical_data(samples=1000):
     Target:
     - status (0: Success, 1: Failure)
     '''
-    print("🤖 Generating synthetic historical Jenkins build data...")
+    print("[INFO] Generating synthetic historical Jenkins build data...")
     data = []
     # Force repeatable randomness for demo stability
     random.seed(42)
@@ -59,7 +59,7 @@ def generate_historical_data(samples=1000):
     return pd.DataFrame(data, columns=['duration', 'warnings', 'errors', 'lines', 'test_rate', 'status'])
 
 def train_model():
-    print("🧠 Starting AI Model Training phase...")
+    print("[START] Starting AI Model Training phase...")
     df = generate_historical_data()
     
     X = df[['duration', 'warnings', 'errors', 'lines', 'test_rate']]
@@ -67,27 +67,27 @@ def train_model():
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     
-    print(f"🔄 Training Random Forest Classifier on {len(X_train)} samples...")
+    print(f"[PROCESS] Training Random Forest Classifier on {len(X_train)} samples...")
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X_train, y_train)
     
-    print("\n📊 Evaluating Model Performance:")
+    print("\n[METRICS] Evaluating Model Performance:")
     y_pred = model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
-    print(f"✅ Accuracy: {accuracy * 100:.2f}%\n")
+    print(f"[SUCCESS] Accuracy: {accuracy * 100:.2f}%\n")
     print(classification_report(y_test, y_pred, target_names=["Success", "Failure"]))
     
     # Save Model
     joblib.dump(model, MODEL_PATH)
-    print(f"\n💾 Model saved successfully to {os.path.abspath(MODEL_PATH)}")
+    print(f"\n[SAVED] Model saved successfully to {os.path.abspath(MODEL_PATH)}")
 
 def predict_current_build(duration, warnings, errors, lines, test_rate):
     if not os.path.exists(MODEL_PATH):
-        print("❌ Model not found! Please train the model first by running:")
+        print("[ERROR] Model not found! Please train the model first by running:")
         print("   python predict_failure.py train")
         return
         
-    print(f"🔮 Predicting status for new build: duration={duration}s, warnings={warnings}, errors={errors}, lines={lines}, test_rate={test_rate:.1f}%")
+    print(f"[PREDICT] Predicting status for new build: duration={duration}s, warnings={warnings}, errors={errors}, lines={lines}, test_rate={test_rate:.1f}%")
     model = joblib.load(MODEL_PATH)
     
     features = pd.DataFrame(
@@ -99,9 +99,9 @@ def predict_current_build(duration, warnings, errors, lines, test_rate):
     
     print("\n================ [ ML PREDICTION RESULT ] ================")
     if prediction == 1:
-        print(f"🚨 STATUS: PREDICTED FAILURE (Confidence: {probability[1]*100:.1f}%)")
+        print(f"[ALERT] STATUS: PREDICTED FAILURE (Confidence: {probability[1]*100:.1f}%)")
     else:
-        print(f"✅ STATUS: PREDICTED SUCCESS (Confidence: {probability[0]*100:.1f}%)")
+        print(f"[OK] STATUS: PREDICTED SUCCESS (Confidence: {probability[0]*100:.1f}%)")
     print("==========================================================\n")
 
 if __name__ == "__main__":
