@@ -33,7 +33,11 @@ mongoose
     console.log("✅ MongoDB connected");
   })
   .catch((error) => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`Mobile access: http://10.98.87.85:${PORT}`);
+    console.error("❌ MongoDB connection failed:", error.message);
   });
+
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📱 Mobile access: http://10.98.87.85:${PORT}`);
+});
 

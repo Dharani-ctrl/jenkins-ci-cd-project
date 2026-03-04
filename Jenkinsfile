@@ -21,6 +21,20 @@ call npm test || exit /b 1
             }
         }
 
+        stage('CI - ML Failure Prediction') {
+            steps {
+                dir('ai_model') {
+                    bat '''
+echo ===========================================
+echo ===== ML HISTORICAL FAILURE PREDICTOR =====
+echo ===========================================
+REM For demo purposes, we pass mock metrics: duration=120s, warnings=2, errors=0, lines=150, tests=98%%
+python predict_failure.py predict 120 2 0 150 98.0
+'''
+                }
+            }
+        }
+
         stage('CI - AI Log Analysis') {
             environment {
                 GEMINI_API_KEY = credentials('gemini-api-key')
