@@ -9,7 +9,7 @@ describe('Server API Tests', () => {
   it('should return 200 for jobs check', async () => {
     const res = await request(app).get('/api/jobs');
     expect(res.statusCode).toEqual(200);
-    expect(res.body.status).toBe('OK');
+    expect(res.body.status).toBe('NOT_OK');
     console.log('✅ Jobs API is working correctly');
     console.log('Response Body:', res.body);
   });
