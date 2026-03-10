@@ -118,7 +118,18 @@ REM Save failed build prediction to MongoDB
 set ML_STATUS=FAILURE
 set ML_CONFIDENCE=91
 set GEMINI_STATUS=FAILURE
-set GEMINI_SUMMARY=Pipeline failed - anomaly detected in build logs.
+
+REM Generate dynamic failure summary using AI
+call npm install --prefix service
+node service/analyzeFailure.js
+
+REM Load dynamic summary
+if exist service\\failure_summary.env (
+    for /f "tokens=1,* delims==" %%a in (service\\failure_summary.env) do set %%a=%%b
+) else (
+    set GEMINI_SUMMARY=Pipeline failed, but AI failed to generate a summary.
+)
+
 node service/savePrediction.js
 '''
         }
