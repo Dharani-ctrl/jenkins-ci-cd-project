@@ -23,7 +23,7 @@ let logs = "";
 if (fs.existsSync(logPath)) {
     logs = fs.readFileSync(logPath, "utf-8");
 } else {
-    console.log(`⚠️ Jenkins build log not found at ${logPath}`);
+    console.log(` Jenkins build log not found at ${logPath}`);
     logs = "Pipeline failed. Could not read Jenkins build log to determine the specific error context.";
 }
 
@@ -33,7 +33,7 @@ const analyzeFailure = async () => {
 
     if (!apiKey) {
         fs.writeFileSync(summaryFilePath, `GEMINI_SUMMARY=Pipeline failed. AI log analysis skipped (missing API key).`);
-        console.log("⚠️ No GEMINI_API_KEY found. Skipping AI analysis.");
+        console.log(" No GEMINI_API_KEY found. Skipping AI analysis.");
         return;
     }
 
@@ -53,7 +53,7 @@ ${logSnippet}
 `;
 
     try {
-        console.log("🤖 Analyzing failure reason from Jenkins logs with Gemini AI...");
+        console.log(" Analyzing failure reason from Jenkins logs with Gemini AI...");
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: prompt,
@@ -64,7 +64,7 @@ ${logSnippet}
         console.log(`[AI SUMMARY] ${summary}`);
         fs.writeFileSync(summaryFilePath, `GEMINI_SUMMARY=${summary}`);
     } catch (error) {
-        console.error("❌ Failed to analyze logs:", error.message);
+        console.error(" Failed to analyze logs:", error.message);
         fs.writeFileSync(summaryFilePath, `GEMINI_SUMMARY=Pipeline failed. AI log analysis encountered an error.`);
     }
 }

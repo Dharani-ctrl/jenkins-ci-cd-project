@@ -91,7 +91,7 @@ node analyzeLogs.js || exit /b 1
 
         stage('CD - Deploy to EC2') {
             steps {
-                echo '🚀 Deploying to AWS EC2 using deploy.sh...'
+                echo ' Deploying to AWS EC2 using deploy.sh...'
                 bat '''
 "C:\\Program Files\\PuTTY\\plink.exe" -batch -ssh -i "C:\\keys\\ec2-key.ppk" ec2-user@13.211.153.37 "bash /home/ec2-user/deploy.sh"
 '''
@@ -101,7 +101,7 @@ node analyzeLogs.js || exit /b 1
 
     post {
         success {
-            echo '✅ CI + CD PIPELINE COMPLETED SUCCESSFULLY'
+            echo ' CI + CD PIPELINE COMPLETED SUCCESSFULLY'
             bat '''
 REM Save successful build prediction to MongoDB
 set ML_STATUS=SUCCESS
@@ -112,7 +112,7 @@ node service/savePrediction.js
 '''
         }
         failure {
-            echo '❌ PIPELINE FAILED - CHECK LOGS FOR DETAILS'
+            echo ' PIPELINE FAILED - CHECK LOGS FOR DETAILS'
             withCredentials([string(credentialsId: 'gemini-api-key', variable: 'GEMINI_API_KEY')]) {
                 bat '''
 REM Save failed build prediction to MongoDB

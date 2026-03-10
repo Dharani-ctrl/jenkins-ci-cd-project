@@ -22,9 +22,9 @@ app.use(express.json());
 
 // Request logger
 app.use((req, res, next) => {
-  console.log(`📡 [${req.method}] ${req.url}`);
+  console.log(` [${req.method}] ${req.url}`);
   if (req.body && Object.keys(req.body).length > 0) {
-    console.log("📦 Body:", JSON.stringify(req.body, null, 2));
+    console.log(" Body:", JSON.stringify(req.body, null, 2));
   }
   next();
 });
@@ -39,7 +39,7 @@ app.use("/dashboard", express.static(path.join(__dirname, "..", "dashboard")));
 
 // JOB check
 app.get("/", (req, res) => {
-  res.send("✅ Skill-Match server is running!");
+  res.send(" Skill-Match server is running!");
 });
 
 const PORT = process.env.PORT || 5000;
@@ -49,22 +49,22 @@ const MONGO_URI =
 mongoose
   .connect(MONGO_URI)
   .then(() => {
-    console.log("✅ MongoDB connected");
+    console.log(" MongoDB connected");
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server running on http://localhost:${PORT}`);
       console.log(`Dashboard: http://localhost:${PORT}/dashboard`);
     });
   })
   .catch((error) => {
-    console.error("❌ MongoDB connection failed:", error.message);
+    console.error(" MongoDB connection failed:", error.message);
   });
 
 // Handle server crashes gracefully and log errors
 process.on("uncaughtException", (err) => {
-  console.error("🔥 UNCAUGHT EXCEPTION:", err);
+  console.error(" UNCAUGHT EXCEPTION:", err);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.error("🔥 UNHANDLED REJECTION:", reason);
+  console.error(" UNHANDLED REJECTION:", reason);
 });
 

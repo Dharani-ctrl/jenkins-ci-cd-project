@@ -9,15 +9,15 @@ const router = express.Router();
 
 
 router.get("/", (req, res) => {
-  res.json({ success: true, message: "✅ Auth route is working!" });
+  res.json({ success: true, message: " Auth route is working!" });
 });
 
 router.post("/test-echo", (req, res) => {
-  console.log("🔊 ECHO:", req.body);
+  console.log(" ECHO:", req.body);
   res.json({ received: req.body });
 });
 
-// ✅ SIGNUP
+//  SIGNUP
 router.post("/signup", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -43,10 +43,10 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// ✅ LOGIN
+//  LOGIN
 router.post("/login", async (req, res) => {
   try {
-    console.log("📩 Login request received:", req.body); // Debug log
+    console.log(" Login request received:", req.body); // Debug log
 
     const { email, password } = req.body;
     if (!email || !password) {
@@ -55,21 +55,21 @@ router.post("/login", async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      console.log(`❌ User not found: ${email}`);
+      console.log(` User not found: ${email}`);
       return res.status(404).json({ success: false, msg: "User not found" });
     }
 
-    console.log("👤 User found, checking password...");
+    console.log(" User found, checking password...");
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log(`🔑 Password match: ${isMatch}`);
+    console.log(` Password match: ${isMatch}`);
 
     if (!isMatch) {
-      console.log("❌ Invalid password");
+      console.log(" Invalid password");
       return res.status(400).json({ success: false, msg: "Invalid credentials" });
     }
 
     if (!process.env.JWT_SECRET) {
-      console.log("⚠️ Missing JWT_SECRET in .env");
+      console.log(" Missing JWT_SECRET in .env");
       return res.status(500).json({ success: false, msg: "Server misconfiguration" });
     }
 
@@ -81,12 +81,12 @@ router.post("/login", async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email },
     });
   } catch (error) {
-    console.error("🔥 Login error:", error);
+    console.error(" Login error:", error);
     res.status(500).json({ success: false, msg: "Server Error", error: error.message });
   }
 });
 
-// ✅ GET USER PROFILE
+//  GET USER PROFILE
 router.get("/profile", protect, async (req, res) => {
   try {
     const user = await User.findById(req.user).select("-password");
