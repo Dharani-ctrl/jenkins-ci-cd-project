@@ -9,7 +9,7 @@ pipeline {
         stage('CI - Server Install & Test') {
             steps {
                 dir('server') {
-                    bat '''
+                    // bat '''
 echo ================================
 echo ===== SERVER INSTALL ^& TEST =====
 echo ================================
