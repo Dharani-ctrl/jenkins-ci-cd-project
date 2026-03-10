@@ -113,7 +113,8 @@ node service/savePrediction.js
         }
         failure {
             echo '❌ PIPELINE FAILED - CHECK LOGS FOR DETAILS'
-            bat '''
+            withCredentials([string(credentialsId: 'gemini-api-key', variable: 'GEMINI_API_KEY')]) {
+                bat '''
 REM Save failed build prediction to MongoDB
 set ML_STATUS=FAILURE
 set ML_CONFIDENCE=91
@@ -132,6 +133,7 @@ if exist service\\failure_summary.env (
 
 node service/savePrediction.js
 '''
+            }
         }
     }
 }
